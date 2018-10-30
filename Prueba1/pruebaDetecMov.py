@@ -27,6 +27,7 @@ while True:
         fondo = gris
         continue
 
+    # Actualiza el fondo cada 10 segundos
     if (tiempoActual < time.time()-10):
         fondo = gris
         tiempoActual = time.time()
@@ -37,6 +38,7 @@ while True:
 
     # Aplicamos un umbral
     umbral = cv2.threshold(resta, 25, 255, cv2.THRESH_BINARY)[1]
+
 
     # Dilatamos el umbral para tapar agujeros
     umbral = cv2.dilate(umbral, None, iterations=2)
