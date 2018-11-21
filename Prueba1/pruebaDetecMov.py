@@ -2,18 +2,25 @@
 import numpy as np
 import cv2
 import time
+import array
 
 # Cargamos el vídeo
 camara = cv2.VideoCapture(0)
+
+def getImage():
+    retval, im = camara.read()
+    return im
 
 # Inicializamos el primer frame a vacío.
 # Nos servirá para obtener el fondo
 fondo = None
 tiempoActual = time.time()
+count = 0
+crono = time.time()
 # Recorremos todos los frames
-while True:
+while crono > time.time()-10:
     # Obtenemos el frame
-    __, frame = camara.read()
+    frame = getImage()
 
     # Convertimos a escala de grises
     gris = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -28,7 +35,7 @@ while True:
         continue
 
     # Actualiza el fondo cada 10 segundos
-    if (tiempoActual < time.time()-10):
+    if tiempoActual < time.time()-10:
         fondo = gris
         tiempoActual = time.time()
         continue
@@ -54,7 +61,11 @@ while True:
         # Eliminamos los contornos más pequeños
         if cv2.contourArea(c) < 500:
             continue
-
+        if count % 120 == 0:
+            captura = getImage()
+            name = count/120
+            cv2.imwrite("frame%d.jpg" % name, captura)
+        count += 1
         # Obtenemos el bounds del contorno, el rectángulo mayor que engloba al contorno
         (x, y, w, h) = cv2.boundingRect(c)
         # Dibujamos el rectángulo del bounds
